@@ -1,9 +1,3 @@
-# Skeleton Code
-
-> Please don't include any extra libraries in your homework. We already included
-> all necessary libraries in the skeleton code.
-
-```c
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
@@ -29,7 +23,8 @@ int main(){
      * Get user input for number to be convert
      */
 
-    // TODO:
+    char n[1000];
+    scanf("%s", n);
 
     printf("%s", msg_prompt_current_number_system);
 
@@ -38,7 +33,36 @@ int main(){
      * Get user input for current number system
      */
 
-    // TODO:
+    int sys;
+    scanf("%d", &sys);
+    if (sys == 10){
+        for(int i = 0; i < strlen(n); i++){
+            if(n[i] < '0' || n[i] > '9'){
+                printf("%s", error_msg_decimal);
+                return 1;
+            }
+        }
+    }
+    else if (sys == 3){
+        for(int i = 0; i < strlen(n); i++){
+            if(n[i] < '0' || n[i] > '2'){
+                printf("%s", error_msg_trinary);
+                return 2;
+            }
+        }
+    }
+    else if (sys == 12){
+        for(int i = 0; i < strlen(n); i++){
+            if(!(n[i] >= '0' && n[i] <= '9') && !(n[i] == 'A' || n[i] == 'B')){
+                printf("%s", error_msg_duodecimal);
+                return 3;
+            }
+        }
+    }
+    else{
+        printf("%s", error_msg_unsupported_system);
+        return 4;
+    }
     printf("%s", msg_prompt_number_system_to_convert);
 
     /**
@@ -49,10 +73,64 @@ int main(){
      * In case of wrong number system for conversion, please use the above error msgs.
      */
 
-    // TODO:
+    int csys;
+    scanf("%d", &csys);
+    int len = strlen(n), digits[strlen(n)];
+    for(int i = 0; i < len; i++){
+        if (n[i] >= '0' && n[i] <= '9'){
+            digits[i] = n[i] - '0'; 
+        }
+        else{
+            if (n[i] == 'A')
+                digits[i] = 10;
+            else 
+                digits[i] = 11;
+        }
+    }
+    int dec = 0, power = 1;
+    if (sys != 10){
+        if (sys == 3){
+            for(int i = len - 1; i >= 0; i--){
+                dec += digits[i] * power;
+                power *= 3;
+            }
+        }
+        else if (sys == 12){
+            for(int i = len - 1; i >= 0; i--){
+                dec += digits[i] * power;
+                power *= 12;
+            }
+        }
+        if (csys == 10){
+            printf("%s", msg_output);
+            printf("%d", dec);
+            return 5;
+        }
+    }
+    else{
+        for(int i = len - 1; i >= 0; i--){
+            dec += digits[i] * power;
+            power *= 10;
+        }
+    }
+    //convert dec to ternary/duodec
+    int index = 0, base = csys;
+    char ans[1000];
+    while (dec > 0) {
+        int remainder = dec % base;
+        dec /= base;
 
+        if (base == 12 && remainder >= 10) {
+            ans[index++] = 'A' + (remainder - 10);
+        } else {
+            ans[index++] = '0' + remainder; 
+        }
+    }
+    printf("%s", msg_output);
+    for (int i = index - 1; i >= 0; i--) {
+        printf("%c", ans[i]);
+    }
 
     return 0;
 }
 // C programmers never die. They are just cast into void.
-```
